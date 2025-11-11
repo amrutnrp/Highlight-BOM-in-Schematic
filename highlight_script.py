@@ -4,6 +4,13 @@ import os
 import argparse
 from tqdm import tqdm   
 
+"""
+tqdm works better in transferring the status back to host app.
+tried print , didn't work well
+it was slow as hell
+
+"""
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="highlight components in pdf")
 
@@ -107,7 +114,15 @@ if __name__ == "__main__":
     # with open(os.path.join(OUTPUT_DIR, "logs.txt"), "w") as f:
         # f.write("\n".join(logs))
         
+    print('\n')
+    print ('logs-')
     for line in logs:
         print (line)
+    
+    if False in Found_flag_list:
+        print ('Following items were not found in the pdf')
+        for idx, term in enumerate(highlight_terms):
+            if Found_flag_list[idx] == False:
+                print (term)
 
-    # print("Processing complete. Please download now")
+    print("Processing complete. Please download now")

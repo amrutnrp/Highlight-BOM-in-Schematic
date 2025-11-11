@@ -140,16 +140,15 @@ with col11:
             
             log_area = st.empty()
             progress_bar = st.progress(0)
-            # log_area.text_area("Logs", value= "", height=300)
 
             st.write('started')
             logs = ""
-            # for line in process.stdout:
+            log_old = ''
+            log_new = ''
             while True:
                 if st.session_state.process.poll() is not None:
                     break
                 line = st.session_state.process.stdout.readline()
-                
 
                 # Parse tqdm percentage if present
                 if "%" in line:
@@ -159,12 +158,17 @@ with col11:
                         progress_bar.progress(percent)
                     except:
                         pass
-                else:
-                    logs += line
-                    # log_area.value = logs
-                    log_area.text_area("Logs", value= logs, height=300)
+                logs += line
+                if  line != '' or '%' in line: 
+                    log_old = log_new
+                    logs2 = logs.split('\n')
+                    logs2 = [line for line in logs2 if '%' not in line ]
+                    log_new = '\n'.join(logs2) 
+                    
+                    if log_old != log_new:
+                        log_area.text_area("Logs", value= log_new, height=300)
 
-                time.sleep(0.05)  # Allow UI refresh
+                # time.sleep(0.05)  # Allow UI refresh
 
             st.success("✅ Script completed!")
 
