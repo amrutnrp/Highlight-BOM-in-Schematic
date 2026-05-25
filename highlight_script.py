@@ -1,8 +1,13 @@
 import fitz
 from openpyxl import load_workbook
-import os
+import os,sys
 import argparse
 from tqdm import tqdm   
+
+from datetime import datetime  as dt
+
+print ('Highlight PDF - BOM  ', dt.now())
+
 
 """
 tqdm works better in transferring the status back to host app.

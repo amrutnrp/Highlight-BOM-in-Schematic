@@ -1,6 +1,7 @@
 import streamlit as st
 import os, shutil, subprocess, time
 
+
 st.markdown("""
         <style>
                .block-container {
@@ -26,7 +27,8 @@ if "process" not in st.session_state:
     st.session_state.process = None
     
     
-st.title("📄 PDF Highlighter - Upload Files")
+print ('highlight BOM - page loaded - by ip ={}, time =<{}>'.format( user_ip , dt.now())  )
+st.title("📄 Highlight BOM in schematic ")
 
 import threading, time
 
@@ -71,7 +73,7 @@ with col2:
                 f.write(excel_file.read())
             st.success(f"Excel saved at {excel_path}")
     else:
-        text_input = st.text_area("Paste text (comma-separated):", key= 'paste')
+        text_input = st.text_area("Paste text (comma-separated):  (Control+Enter to save )", key= 'paste')
         if text_input.strip():
             text_path = os.path.join(UPLOAD_DIR, "input_text.txt")
             with open(text_path, "w") as f:
@@ -97,6 +99,7 @@ col11, col21 = st .columns([1,1])
 script1 = 'highlight_script.py'
 s= list_and_group(UPLOAD_DIR, ['pdf','txt', 'xlsx'])
 
+# print (s)
 
 
 with col11:
@@ -130,7 +133,7 @@ with col11:
         #        capture_output=True,
         #        text=True
         #    )
-        
+            print ('Executed --- at time {} ---- file name = {}   '.format(dt.now() , pdf))
             cmd = ["python", script1,\
                     "--pdf", pdf   ,  \
                     "--inp", inp   ,  \
@@ -148,6 +151,7 @@ with col11:
             while True:
                 if st.session_state.process.poll() is not None:
                     break
+
                 line = st.session_state.process.stdout.readline()
 
                 # Parse tqdm percentage if present
@@ -174,10 +178,13 @@ with col11:
 
             if os.path.exists(output_path):
                 with open(output_path, "rb") as f:
+                    timestamp = dt.now().strftime("%Y-%m-%d_%H-%M-%S")
+                    base_name, extension = os.path.splitext(s[0])
+                    fname = f"{base_name}_HD{timestamp}{extension}"
                     st.download_button(
                         label="📥 Download Processed PDF",
                         data=f,
-                        file_name="highlighted-"+s[0],
+                        file_name = fname,
                         mime="application/pdf"
                     )
             else:
